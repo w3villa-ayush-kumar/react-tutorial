@@ -527,3 +527,453 @@ function sum(...numbers) {
 Very common in React for props and state updates.
 
 ---
+
+# JSX and Component Architecture
+
+## Overview
+
+JSX and component architecture define **how React UIs are written, structured, and reused**. This document covers **both legacy patterns and modern React practices**, helping you understand existing codebases while writing up-to-date React applications.
+
+---
+
+## JSX Syntax
+
+### What is JSX?
+
+- JSX stands for **JavaScript XML**
+- It allows writing HTML-like syntax inside JavaScript
+- JSX is transpiled into plain JavaScript (using Babel)
+
+**Example:**
+
+```jsx
+const element = <h1>Hello React</h1>;
+```
+
+Behind the scenes:
+
+```js
+React.createElement("h1", null, "Hello React");
+```
+
+---
+
+## Functional vs Class Components
+
+### Functional Components (Modern & Recommended)
+
+- Simpler and easier to read
+- Use **Hooks** for state and lifecycle
+- Preferred in modern React development
+
+```jsx
+function Greeting() {
+  return <h2>Hello!</h2>;
+}
+```
+
+### Class Components (Legacy)
+
+- Older React pattern
+- Uses lifecycle methods like `componentDidMount`
+- Still present in many existing codebases
+
+```jsx
+class Greeting extends React.Component {
+  render() {
+    return <h2>Hello!</h2>;
+  }
+}
+```
+
+**Modern Insight:** New React projects should favor functional components with hooks.
+
+---
+
+## Props and Component Composition
+
+### Props
+
+- Props are **inputs passed to components**
+- Make components dynamic and reusable
+
+```jsx
+function User({ name }) {
+  return <p>Hello, {name}</p>;
+}
+```
+
+### Component Composition
+
+- Components are combined to build complex UIs
+- Encourages reuse instead of inheritance
+
+```jsx
+function Card({ children }) {
+  return <div className="card">{children}</div>;
+}
+```
+
+---
+
+## defaultProps (Legacy & Modern Usage)
+
+### Legacy Usage
+
+Used mainly with class components or older functional components.
+
+```jsx
+Button.defaultProps = {
+  color: "blue",
+};
+```
+
+### Modern Alternative
+
+Use **default values in function parameters**.
+
+```jsx
+function Button({ color = "blue" }) {
+  return <button style={{ color }}>Click</button>;
+}
+```
+
+**Modern Insight:** Default parameters are preferred in functional components.
+
+---
+
+## PropTypes (Legacy Runtime Validation)
+
+### What are PropTypes?
+
+- Runtime type-checking for props
+- Helps catch bugs during development
+- Common in older and non-TypeScript projects
+
+```jsx
+import PropTypes from "prop-types";
+
+User.propTypes = {
+  name: PropTypes.string.isRequired,
+};
+```
+
+### Current Status
+
+- **Not removed** from React
+- Still supported
+- Less commonly used in modern projects
+
+---
+
+## Modern Alternative: TypeScript
+
+In modern React applications, **TypeScript** is preferred over PropTypes.
+
+### Example with TypeScript
+
+```tsx
+type UserProps = {
+  name: string;
+};
+
+function User({ name }: UserProps) {
+  return <p>Hello, {name}</p>;
+}
+```
+
+### Why TypeScript is Preferred
+
+- Compile-time type checking
+- Better IDE support and auto-completion
+- No runtime overhead
+- Scales better for large applications
+
+---
+
+## Building Reusable Components
+
+### Best Practices
+
+- Keep components small and focused
+- Use props for configuration
+- Avoid hardcoded values
+- Prefer composition over inheritance
+- Write components independent of pages
+
+Reusable components improve consistency and reduce duplication.
+
+---
+
+# Event Handling and Forms
+
+## Handling Events in React
+
+React handles events using **camelCase syntax** and passes a synthetic event object.
+
+### Common Events
+
+- `onClick`
+- `onChange`
+- `onSubmit`
+- `onMouseEnter`, `onKeyDown`
+
+**Example:**
+
+```jsx
+function ClickButton() {
+  const handleClick = () => {
+    alert("Button clicked");
+  };
+
+  return <button onClick={handleClick}>Click</button>;
+}
+```
+
+---
+
+## Handling Input Changes
+
+React forms listen to user input using `onChange`.
+
+```jsx
+function InputExample() {
+  const [name, setName] = React.useState("");
+
+  return <input value={name} onChange={(e) => setName(e.target.value)} />;
+}
+```
+
+---
+
+## Controlled vs Uncontrolled Components
+
+### Controlled Components (Recommended)
+
+- Form data is controlled by React state
+- Single source of truth
+
+```jsx
+function ControlledForm() {
+  const [email, setEmail] = React.useState("");
+
+  return <input value={email} onChange={(e) => setEmail(e.target.value)} />;
+}
+```
+
+### Uncontrolled Components (Legacy / Limited Use)
+
+- Form data handled by the DOM
+- Uses `ref`
+
+```jsx
+function UncontrolledForm() {
+  const inputRef = React.useRef();
+
+  return <input ref={inputRef} />;
+}
+```
+
+**Best Practice:** Prefer controlled components for validation and state management.
+
+---
+
+## Form Validation Patterns
+
+### Basic Validation (Manual)
+
+```jsx
+function SimpleForm() {
+  const [error, setError] = React.useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!e.target.email.value) {
+      setError("Email is required");
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input name="email" />
+      {error && <p>{error}</p>}
+      <button type="submit">Submit</button>
+    </form>
+  );
+}
+```
+
+---
+
+## Formik Basics
+
+Formik is a popular library for handling **form state, validation, and submission**.
+
+### Why Formik?
+
+- Reduces boilerplate code
+- Handles form state automatically
+- Integrates easily with validation libraries
+
+**Basic Example:**
+
+```jsx
+import { Formik, Form, Field } from "formik";
+
+<Formik
+  initialValues={{ email: "" }}
+  onSubmit={(values) => console.log(values)}
+>
+  <Form>
+    <Field name="email" />
+    <button type="submit">Submit</button>
+  </Form>
+</Formik>;
+```
+
+---
+
+## Yup Basics (Validation with Formik)
+
+Yup is commonly used with Formik for schema-based validation.
+
+```jsx
+import * as Yup from "yup";
+
+const schema = Yup.object({
+  email: Yup.string().email().required(),
+});
+```
+
+Formik + Yup provides a clean and scalable solution for complex forms.
+
+# React Hooks (Core and Custom)
+
+## Core Hooks
+
+### useState
+
+Used to manage local component state.
+
+```jsx
+function Counter() {
+  const [count, setCount] = React.useState(0);
+  return <button onClick={() => setCount(count + 1)}>{count}</button>;
+}
+```
+
+---
+
+### useEffect
+
+Handles side effects like API calls, subscriptions, and timers.
+
+```jsx
+React.useEffect(() => {
+  console.log("Component mounted");
+  return () => console.log("Cleanup");
+}, []);
+```
+
+- Runs after render
+- Dependency array controls execution
+
+---
+
+### useRef
+
+Stores mutable values without triggering re-renders.
+
+```jsx
+const inputRef = React.useRef(null);
+
+<input ref={inputRef} />;
+```
+
+Common use cases:
+
+- Accessing DOM elements
+- Storing previous values
+
+---
+
+### useMemo
+
+Optimizes expensive calculations.
+
+```jsx
+const total = React.useMemo(() => {
+  return items.reduce((sum, i) => sum + i.price, 0);
+}, [items]);
+```
+
+---
+
+### useCallback
+
+Prevents unnecessary function re-creation.
+
+```jsx
+const handleClick = React.useCallback(() => {
+  console.log("Clicked");
+}, []);
+```
+
+Useful when passing callbacks to memoized child components.
+
+---
+
+## Rules of Hooks
+
+Hooks must follow these rules:
+
+- Call hooks **only at the top level**
+- Call hooks **only inside React functions**
+- Never call hooks inside loops, conditions, or nested functions
+
+Violating these rules can cause unpredictable behavior.
+
+---
+
+## Custom Hooks
+
+Custom hooks allow reuse of logic across multiple components.
+
+### Creating a Custom Hook
+
+```jsx
+function useToggle(initial = false) {
+  const [value, setValue] = React.useState(initial);
+  const toggle = () => setValue((v) => !v);
+  return [value, toggle];
+}
+```
+
+### Using a Custom Hook
+
+```jsx
+const [isOpen, toggle] = useToggle();
+```
+
+Guidelines:
+
+- Custom hooks must start with `use`
+- Can use other hooks internally
+- Focus on reusable logic, not UI
+
+---
+
+## Debugging Hook Issues
+
+### Common Problems
+
+- Missing dependencies in `useEffect`
+- Infinite re-render loops
+- Stale values in closures
+
+### Debugging Tips
+
+- Use React DevTools
+- Enable `eslint-plugin-react-hooks`
+- Review dependency arrays carefully
+- Log values inside effects and callbacks

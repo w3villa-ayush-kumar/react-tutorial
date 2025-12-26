@@ -977,3 +977,291 @@ Guidelines:
 - Enable `eslint-plugin-react-hooks`
 - Review dependency arrays carefully
 - Log values inside effects and callbacks
+
+# Routing with React Router
+
+## Client-Side Routing
+
+Client-side routing allows navigation **without full page reloads**. React updates the UI by rendering different components based on the URL.
+
+Benefits:
+
+- Faster navigation
+- SPA experience
+- Better state preservation between pages
+
+---
+
+## Setting Up React Router
+
+React routing is handled using `react-router-dom`.
+
+### Installation
+
+```bash
+npm install react-router-dom
+```
+
+### Basic Setup (v6+)
+
+```jsx
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+```
+
+**Modern Insight:** `Switch` is replaced by `Routes` in React Router v6.
+
+---
+
+## Navigation
+
+### Using Link (Preferred)
+
+```jsx
+import { Link } from "react-router-dom";
+
+<Link to="/about">About</Link>;
+```
+
+### Programmatic Navigation
+
+```jsx
+import { useNavigate } from "react-router-dom";
+
+const navigate = useNavigate();
+navigate("/login");
+```
+
+**Legacy:** `useHistory` (v5) → replaced by `useNavigate` (v6).
+
+---
+
+## Dynamic Routes
+
+Used when route parameters change dynamically.
+
+```jsx
+<Route path="/users/:id" element={<User />} />
+```
+
+```jsx
+import { useParams } from "react-router-dom";
+
+function User() {
+  const { id } = useParams();
+  return <p>User ID: {id}</p>;
+}
+```
+
+---
+
+## Nested Routes
+
+Nested routes help structure layouts.
+
+```jsx
+<Route path="/dashboard" element={<Dashboard />}>
+  <Route path="profile" element={<Profile />} />
+  <Route path="settings" element={<Settings />} />
+</Route>
+```
+
+Used commonly for dashboards and admin panels.
+
+---
+
+## Redirects
+
+### Modern Redirect (v6)
+
+```jsx
+import { Navigate } from "react-router-dom";
+
+<Route path="/old" element={<Navigate to="/new" />} />;
+```
+
+### Legacy Redirect (v5)
+
+- Used `<Redirect />`
+- Replaced by `<Navigate />`
+
+---
+
+## Route Guards (Protected Routes)
+
+Used to restrict access based on authentication.
+
+```jsx
+function ProtectedRoute({ isAuth, children }) {
+  return isAuth ? children : <Navigate to="/login" />;
+}
+```
+
+```jsx
+<Route
+  path="/dashboard"
+  element={
+    <ProtectedRoute isAuth={true}>
+      <Dashboard />
+    </ProtectedRoute>
+  }
+/>
+```
+
+Common use cases:
+
+- Authentication
+- Role-based access control
+
+# State Management (Context + Redux)
+
+## Lifting State Up & Prop Drilling
+
+### Lifting State Up
+
+When multiple components need the same data, state is moved to their **closest common parent**.
+
+```jsx
+function Parent() {
+  const [count, setCount] = React.useState(0);
+  return <Child count={count} setCount={setCount} />;
+}
+```
+
+### Prop Drilling
+
+Passing props through many layers just to reach a deep child.
+
+```jsx
+<Parent>
+  <Level1 count={count} />
+</Parent>
+```
+
+**Problem:** Hard to maintain and scale.
+
+---
+
+## Context API
+
+Context solves prop drilling by providing **global data access**.
+
+### Creating Context
+
+```jsx
+const ThemeContext = React.createContext();
+```
+
+### Providing Context
+
+```jsx
+<ThemeContext.Provider value="dark">
+  <App />
+</ThemeContext.Provider>
+```
+
+### Consuming with useContext
+
+```jsx
+const theme = React.useContext(ThemeContext);
+```
+
+**Use Case:** Theme, auth user, language, app-level settings.
+
+---
+
+## Redux Fundamentals
+
+Redux is used for **predictable global state management**.
+
+### Core Principles
+
+- Single source of truth
+- State is read-only
+- Changes via pure reducers
+
+---
+
+## Redux Toolkit (Modern Redux)
+
+Redux Toolkit (RTK) is the **official and recommended** way to use Redux.
+
+### Store Setup
+
+```js
+import { configureStore } from "@reduxjs/toolkit";
+
+export const store = configureStore({
+  reducer: {},
+});
+```
+
+### Slice Example
+
+```js
+import { createSlice } from "@reduxjs/toolkit";
+
+const counterSlice = createSlice({
+  name: "counter",
+  initialState: { value: 0 },
+  reducers: {
+    increment: (state) => {
+      state.value += 1;
+    },
+  },
+});
+
+export const { increment } = counterSlice.actions;
+export default counterSlice.reducer;
+```
+
+RTK reduces boilerplate and improves developer experience.
+
+---
+
+## Using Redux in React
+
+```jsx
+import { useSelector, useDispatch } from "react-redux";
+
+const count = useSelector((state) => state.counter.value);
+const dispatch = useDispatch();
+
+dispatch(increment());
+```
+
+---
+
+## Middleware Basics
+
+Middleware handles **async logic and side effects**.
+
+### Redux Thunk (Common & Simple)
+
+```js
+const fetchData = () => async (dispatch) => {
+  const res = await fetch(url);
+  const data = await res.json();
+};
+```
+
+- Built into Redux Toolkit
+- Easy to use
+
+### Redux Saga (Advanced)
+
+- Uses generator functions
+- Better for complex workflows
+- More setup and learning curve
+
+**Modern Insight:** Prefer **Redux Toolkit + Thunk** for most applications.

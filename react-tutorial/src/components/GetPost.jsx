@@ -13,7 +13,7 @@ const GetPost = () => {
 
   return (
     <div>
-      <h3>Fetched Title:</h3>
+      <h2>Fetched Title:</h2>
       <p>{title}</p>
     </div>
   );

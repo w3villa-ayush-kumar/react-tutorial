@@ -8,6 +8,7 @@ import CounterClass from "components/CounterClass";
 import { fetchDummyData } from "utils/fetchDummyData";
 import { getUserInfo } from "utils/userUtils";
 import GetPost from "components/GetPost";
+import GetUser from "components/GetUser";
 
 function App() {
 
@@ -25,8 +26,6 @@ function App() {
   return (
     <div className="App">
 
-      <h1>Day 1</h1>
-
       {/* <h1>Hello REact!</h1> */}
       <Greeting message="React" />
       <JsxExplore name="Ayush" />
@@ -34,13 +33,13 @@ function App() {
       <h2>Async Fetch Example</h2>
       <button onClick={handleFetch}>Fetch Dummy Data</button>
 
-      <h1>Day 2</h1>
-
       <LangSetup lang="JavaScript" exp={2.5} />
       <Form />
       {/* <FormFormik /> */}
       <CounterClass />
       <GetPost />
+
+      <GetUser />
     </div >
   );
 }

@@ -1265,3 +1265,281 @@ const fetchData = () => async (dispatch) => {
 - More setup and learning curve
 
 **Modern Insight:** Prefer **Redux Toolkit + Thunk** for most applications.
+
+# API Integration & Async Handling
+
+## Fetching Data in React
+
+React applications commonly interact with APIs to fetch or send data. This is usually done inside effects or async handlers.
+
+---
+
+## Using fetch API
+
+Built-in browser API for HTTP requests.
+
+```js
+fetch("https://api.example.com/users")
+  .then((res) => res.json())
+  .then((data) => console.log(data))
+  .catch((err) => console.error(err));
+```
+
+### Async/Await with fetch
+
+```js
+async function getUsers() {
+  const res = await fetch("https://api.example.com/users");
+  return await res.json();
+}
+```
+
+---
+
+## Using Axios
+
+Axios is a popular HTTP client with better defaults and interceptors.
+
+```js
+import axios from "axios";
+
+axios
+  .get("/users")
+  .then((res) => console.log(res.data))
+  .catch((err) => console.error(err));
+```
+
+### Why Axios?
+
+- Automatic JSON parsing
+- Interceptors for auth & errors
+- Better error handling
+
+---
+
+## Handling Loading, Success & Error States
+
+A common pattern when calling APIs.
+
+```jsx
+function Users() {
+  const [data, setData] = React.useState(null);
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState(null);
+
+  React.useEffect(() => {
+    fetch("/users")
+      .then((res) => res.json())
+      .then(setData)
+      .catch(setError)
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error occurred</p>;
+
+  return <pre>{JSON.stringify(data)}</pre>;
+}
+```
+
+---
+
+## AbortController (Request Cancellation)
+
+Used to cancel ongoing API requests (important for cleanup).
+
+```js
+const controller = new AbortController();
+
+fetch(url, { signal: controller.signal });
+
+controller.abort();
+```
+
+### With useEffect
+
+```jsx
+React.useEffect(() => {
+  const controller = new AbortController();
+
+  fetch(url, { signal: controller.signal })
+    .then((res) => res.json())
+    .then(setData)
+    .catch((err) => {
+      if (err.name !== "AbortError") throw err;
+    });
+
+  return () => controller.abort();
+}, []);
+```
+
+---
+
+## Centralized Error Handling
+
+### API Utility Function
+
+```js
+export async function apiRequest(url) {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error("Request failed");
+  return res.json();
+}
+```
+
+### Axios Interceptors
+
+```js
+axios.interceptors.response.use(
+  (res) => res,
+  (err) => {
+    console.error(err);
+    return Promise.reject(err);
+  }
+);
+```
+
+Centralized handling avoids repetitive error logic and keeps code clean.
+
+# Component Styling Strategies
+
+## Styling Approaches in React
+
+React supports multiple styling strategies. The choice depends on team preference, scalability needs, and project complexity.
+
+---
+
+## CSS Modules
+
+CSS Modules scope styles locally to components, avoiding class name collisions.
+
+**Example:**
+
+```css
+/* Button.module.css */
+.btn {
+  background: blue;
+  color: white;
+}
+```
+
+```jsx
+import styles from "./Button.module.css";
+
+function Button() {
+  return <button className={styles.btn}>Click</button>;
+}
+```
+
+**Use when:** You want traditional CSS with component-level isolation.
+
+---
+
+## Tailwind CSS
+
+Tailwind is a **utility-first CSS framework** used directly in JSX.
+
+**Example:**
+
+```jsx
+function Card() {
+  return (
+    <div className="p-4 bg-white dark:bg-gray-800 rounded shadow">Content</div>
+  );
+}
+```
+
+**Pros:**
+
+- No separate CSS files
+- Fast UI development
+- Consistent design system
+
+---
+
+## Styled-Components
+
+Styled-components use **CSS-in-JS**, allowing styles inside JavaScript.
+
+```jsx
+import styled from "styled-components";
+
+const Button = styled.button`
+  background: purple;
+  color: white;
+`;
+```
+
+**Use when:** You want dynamic styling based on props and themes.
+
+---
+
+## Responsive Design
+
+Responsive layouts adapt to different screen sizes.
+
+### Media Queries
+
+```css
+.container {
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+}
+```
+
+### Tailwind Responsive Classes
+
+```jsx
+<div className="p-6 md:p-10 lg:p-16">Responsive Box</div>
+```
+
+---
+
+## Theming & Dark Mode
+
+### CSS Variable Approach
+
+```css
+:root {
+  --bg: white;
+}
+[data-theme="dark"] {
+  --bg: black;
+}
+```
+
+```jsx
+<div style={{ background: "var(--bg)" }} />
+```
+
+---
+
+### Dark Mode Toggle (State-Based)
+
+```jsx
+function ThemeToggle() {
+  const [dark, setDark] = React.useState(false);
+
+  return <button onClick={() => setDark(!dark)}>Toggle Theme</button>;
+}
+```
+
+### Tailwind Dark Mode
+
+- Uses `dark:` variant
+- Controlled via class or system preference
+
+---
+
+## Choosing the Right Strategy
+
+- **CSS Modules** → Simple, scoped styling
+- **Tailwind** → Fast, consistent UI development
+- **Styled-components** → Dynamic, theme-driven styling
+
+Most real-world projects use a combination based on needs.

@@ -1,5 +1,18 @@
 import useFormInput from "hooks/useFormInput";
 import React, { useState } from "react";
+import styled from "styled-components";
+
+const FormWrapper = styled.form`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 1rem 0;
+  padding: 1rem;
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+  border-radius: 1rem;
+`;
 
 const Form = () => {
   const firstName = useFormInput("");
@@ -45,7 +58,7 @@ const Form = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <FormWrapper onSubmit={handleSubmit}>
       <h2>Registration Form</h2>
       <label>
         <p>First Name</p>
@@ -119,7 +132,7 @@ const Form = () => {
       <br />
 
       <button type="submit">Submit</button>
-    </form>
+    </FormWrapper>
   );
 };
 

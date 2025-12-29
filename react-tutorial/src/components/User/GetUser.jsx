@@ -1,5 +1,18 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import styled from "styled-components";
+
+const UserWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 1rem 0;
+  padding: 1rem;
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+  border-radius: 1rem;
+`;
 
 const GetUser = () => {
   const [users, setUsers] = useState([]);
@@ -36,8 +49,8 @@ const GetUser = () => {
   }, []);
 
   return (
-    <div>
-      <h2>Fetched Users:</h2>
+    <UserWrapper>
+      <h2>Fetched Users</h2>
       {loading && <p>Loading...</p>}
       {error && <p>{error}</p>}
       <ul>
@@ -47,7 +60,7 @@ const GetUser = () => {
           </li>
         ))}
       </ul>
-    </div>
+    </UserWrapper>
   );
 };
 

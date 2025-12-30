@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
 const PostWrapper = styled.div`
@@ -13,15 +13,24 @@ const PostWrapper = styled.div`
   border-radius: 1rem;
 `;
 
-const GetPost = () => {
+const GetPost = React.memo(() => {
   const [title, setTitle] = useState("");
 
   useEffect(() => {
+    let isMounted = true;
+
     fetch("https://jsonplaceholder.typicode.com/posts/1")
       .then((res) => res.json())
       .then((data) => {
-        setTitle(data.title);
-      });
+        if (isMounted) {
+          setTitle(data.title);
+        }
+      })
+      .catch((err) => console.error(err));
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   return (
@@ -30,6 +39,6 @@ const GetPost = () => {
       <p>{title}</p>
     </PostWrapper>
   );
-};
+});
 
 export default GetPost;

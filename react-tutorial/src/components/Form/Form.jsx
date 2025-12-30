@@ -1,6 +1,6 @@
-import useFormInput from "hooks/useFormInput";
-import React, { useState } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import styled from "styled-components";
+import useFormInput from "hooks/useFormInput";
 
 const FormWrapper = styled.form`
   display: flex;
@@ -14,74 +14,89 @@ const FormWrapper = styled.form`
   border-radius: 1rem;
 `;
 
-const Form = () => {
-  const firstName = useFormInput("");
-  const lastName = useFormInput("");
-  const email = useFormInput("");
-  const password = useFormInput("");
+const Form = React.memo(() => {
+  const { reset: resetFirstName, ...firstName } = useFormInput("");
+  const { reset: resetLastName, ...lastName } = useFormInput("");
+  const { reset: resetEmail, ...email } = useFormInput("");
+  const { reset: resetPassword, ...password } = useFormInput("");
 
   const [gender, setGender] = useState("");
   const [state, setState] = useState("");
   const [error, setError] = useState("");
 
-  const progLang = ["React", "JavaScript", "Tailwind CSS", "Bootstrap"];
+  const progLang = useMemo(
+    () => ["React", "JavaScript", "Tailwind CSS", "Bootstrap"],
+    []
+  );
+
   const [selected, setSelected] = useState([]);
 
-  const handleCheckboxChange = (lang) => {
+  const handleCheckboxChange = useCallback((lang) => {
     setSelected((prev) =>
       prev.includes(lang)
         ? prev.filter((item) => item !== lang)
         : [...prev, lang]
     );
-  };
+  }, []);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = useCallback(
+    (e) => {
+      e.preventDefault();
 
-    const formData = {
-      firstName: firstName.value,
-      lastName: lastName.value,
-      email: email.value,
-      password: password.value,
+      const formData = {
+        firstName: firstName.value,
+        lastName: lastName.value,
+        email: email.value,
+        password: password.value,
+        gender,
+        state,
+        progLang: selected,
+      };
+
+      if (password.value.length < 6) {
+        setError("Password is short");
+        return;
+      }
+
+      setError("");
+      console.log("Form Data:", formData);
+    },
+    [
+      firstName.value,
+      lastName.value,
+      email.value,
+      password.value,
       gender,
       state,
-      progLang: selected,
-    };
-
-    if (password.value.length < 6) {
-      setError("Password is short");
-      return;
-    }
-
-    setError("");
-    console.log("Form Data:", formData);
-  };
+      selected,
+    ]
+  );
 
   return (
     <FormWrapper onSubmit={handleSubmit}>
       <h2>Registration Form</h2>
+
       <label>
         <p>First Name</p>
         <input type="text" placeholder="First Name" {...firstName} />
       </label>
-      <br />
+
       <label>
         <p>Last Name</p>
         <input type="text" placeholder="Last Name" {...lastName} />
       </label>
-      <br />
+
       <label>
         <p>Email</p>
         <input type="email" placeholder="Email" {...email} />
       </label>
-      <br />
 
       <label>
         <p>Password</p>
         <input type="password" placeholder="Password" {...password} />
       </label>
+
       {error && <p>{error}</p>}
-      <br />
 
       <div>
         <p>Gender</p>
@@ -114,7 +129,6 @@ const Form = () => {
           <option value="Noida">Noida</option>
         </select>
       </label>
-      <br />
 
       <div>
         <p>Programming Languages</p>
@@ -129,11 +143,10 @@ const Form = () => {
           </label>
         ))}
       </div>
-      <br />
 
       <button type="submit">Submit</button>
     </FormWrapper>
   );
-};
+});
 
 export default Form;

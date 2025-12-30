@@ -8,16 +8,15 @@ const GreetingWrapper = styled.div`
   border-radius: 1rem;
 `;
 
-const JsxExplore = (props) => {
+const JsxExplore = React.memo(({ name }) => {
   const hours = 17;
   const date = "22nd Dec, 2025";
 
   return (
     <GreetingWrapper>
-      {hours > 12 ? "Good Evening" : "Good Morning"} {props.name}, todays is{" "}
-      {date}
+      {hours > 12 ? "Good Evening" : "Good Morning"} {name}, today is {date}
     </GreetingWrapper>
   );
-};
+});
 
 export default JsxExplore;

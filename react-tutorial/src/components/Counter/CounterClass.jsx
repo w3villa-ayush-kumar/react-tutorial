@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import styled from "styled-components";
 
 const CounterWrapper = styled.div`
@@ -42,26 +42,25 @@ const CounterButton = styled.button`
   }
 `;
 
-const CounterClass = () => {
+const CounterClass = React.memo(() => {
   const [count, setCount] = useState(0);
 
-  const increment = () => {
-    setCount(count + 1);
-  };
-  const reset = () => {
+  const increment = useCallback(() => {
+    setCount((prev) => prev + 1);
+  }, []);
+
+  const reset = useCallback(() => {
     setCount(0);
-  };
+  }, []);
 
   return (
     <CounterWrapper>
       <CounterText>Count : {count}</CounterText>
-      <CounterButton primary onClick={increment}>
-        +1
-      </CounterButton>
+      <CounterButton onClick={increment}>+1</CounterButton>
       <CounterButton onClick={reset}>Reset</CounterButton>
     </CounterWrapper>
   );
-};
+});
 
 export default CounterClass;
 

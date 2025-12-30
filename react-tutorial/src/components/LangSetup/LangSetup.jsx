@@ -9,17 +9,17 @@ const SetupWrapper = styled.p`
   border-radius: 1rem;
 `;
 
-const LangSetup = ({ lang, exp }) => {
+const LangSetup = React.memo(({ lang, exp }) => {
   return (
     <SetupWrapper>
       User prefers {lang} programming language. <br />
       Experience - {exp} years
     </SetupWrapper>
   );
-};
+});
 
 LangSetup.propTypes = {
-  lang: PropTypes.number.isRequired,
+  lang: PropTypes.string.isRequired,
   exp: PropTypes.number,
 };
 

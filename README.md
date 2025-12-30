@@ -1543,3 +1543,254 @@ function ThemeToggle() {
 - **Styled-components** → Dynamic, theme-driven styling
 
 Most real-world projects use a combination based on needs.
+
+# Testing React Applications
+
+## Why Testing Matters
+
+Testing ensures that your application:
+
+- Works as expected
+- Prevents regressions when code changes
+- Improves confidence during refactoring
+- Documents component behavior
+
+In React, testing focuses on **how users interact with the UI**, not implementation details.
+
+---
+
+## Types of Testing
+
+### Unit Testing
+
+- Tests **individual functions or components** in isolation
+- Fast and easy to maintain
+
+**Example:** Testing a utility function
+
+```js
+expect(add(2, 3)).toBe(5);
+```
+
+---
+
+### Integration Testing
+
+- Tests **multiple components working together**
+- More realistic than unit tests
+
+**Example:**
+
+- Form submission
+- Component with API call + UI update
+
+React Testing Library is mainly used for integration-style tests.
+
+---
+
+## Jest Basics
+
+Jest is the default testing framework for React.
+
+### Common Jest Functions
+
+- `test` / `it`
+- `expect`
+- `describe`
+
+```js
+test("adds numbers", () => {
+  expect(2 + 2).toBe(4);
+});
+```
+
+---
+
+## React Testing Library (RTL)
+
+RTL tests components the way **users see and use them**.
+
+### Basic Component Test
+
+```jsx
+import { render, screen } from "@testing-library/react";
+import Button from "./Button";
+
+test("renders button", () => {
+  render(<Button />);
+  expect(screen.getByText(/click/i)).toBeInTheDocument();
+});
+```
+
+### Query Priority
+
+- `getByRole` (preferred)
+- `getByLabelText`
+- `getByText`
+
+---
+
+## Mocking Functions
+
+Mock functions are used to track calls and behavior.
+
+```js
+const mockFn = jest.fn();
+mockFn();
+expect(mockFn).toHaveBeenCalled();
+```
+
+Common use cases:
+
+- Event handlers
+- Callback props
+
+---
+
+## Mocking API Calls
+
+### Mocking fetch
+
+```js
+global.fetch = jest.fn(() =>
+  Promise.resolve({
+    json: () => Promise.resolve({ name: "Test" }),
+  })
+);
+```
+
+### Mocking with Jest
+
+```js
+jest.mock("./api", () => ({
+  getUsers: jest.fn(),
+}));
+```
+
+Mocking ensures tests are **fast, reliable, and independent of real APIs**.
+
+---
+
+## Best Practices
+
+- Test user behavior, not internal state
+- Avoid testing implementation details
+- Keep tests readable and focused
+- Use mocks only where necessary
+
+# Performance Optimization
+
+## Why Performance Optimization Matters
+
+Performance optimization helps React applications:
+
+- Render faster
+- Avoid unnecessary re-renders
+- Improve user experience
+- Scale efficiently as the app grows
+
+Optimization should be applied **only when needed**, not prematurely.
+
+---
+
+## React.memo
+
+`React.memo` prevents re-rendering of functional components when props do not change.
+
+```jsx
+const ListItem = React.memo(({ item }) => {
+  return <li>{item}</li>;
+});
+```
+
+**Use when:**
+
+- Component renders frequently
+- Props are stable
+
+---
+
+## useMemo
+
+`useMemo` memoizes **expensive calculations**.
+
+```jsx
+const total = React.useMemo(() => {
+  return items.reduce((sum, i) => sum + i.price, 0);
+}, [items]);
+```
+
+**Use when:**
+
+- Heavy computations
+- Derived data based on dependencies
+
+---
+
+## useCallback
+
+`useCallback` memoizes functions to avoid re-creation on each render.
+
+```jsx
+const handleClick = React.useCallback(() => {
+  console.log("Clicked");
+}, []);
+```
+
+Useful when passing callbacks to memoized child components.
+
+---
+
+## Lazy Loading Components
+
+Lazy loading improves initial load time by loading components **only when needed**.
+
+```jsx
+const Dashboard = React.lazy(() => import("./Dashboard"));
+```
+
+### Using Suspense
+
+```jsx
+<React.Suspense fallback={<p>Loading...</p>}>
+  <Dashboard />
+</React.Suspense>
+```
+
+Common use cases:
+
+- Routes
+- Heavy components
+
+---
+
+## Bundle Analysis
+
+Bundle analysis helps identify **large or unnecessary dependencies**.
+
+### Tools
+
+- `source-map-explorer`
+- Webpack bundle analyzer
+
+Used to:
+
+- Reduce bundle size
+- Improve load performance
+
+---
+
+## Profiling with React DevTools
+
+React DevTools Profiler helps measure:
+
+- Component render time
+- Re-render frequency
+
+### When to Profile
+
+- UI feels slow
+- Frequent re-renders
+- Before applying optimizations
+
+Profiling helps apply optimizations where they matter most.

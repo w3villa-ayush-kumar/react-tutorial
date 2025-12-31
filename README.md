@@ -1794,3 +1794,114 @@ React DevTools Profiler helps measure:
 - Before applying optimizations
 
 Profiling helps apply optimizations where they matter most.
+
+# Security in React Applications
+
+## Understanding XSS in React
+
+**Cross-Site Scripting (XSS)** occurs when malicious scripts are injected into a web application and executed in the browser.
+
+### How React Helps
+
+- React **automatically escapes values** rendered in JSX
+- Prevents most common XSS attacks by default
+
+```jsx
+const name = "<script>alert(1)</script>";
+return <p>{name}</p>; // Safe: script is escaped
+```
+
+### Risk Areas
+
+- Using `dangerouslySetInnerHTML`
+- Rendering untrusted HTML from APIs
+
+```jsx
+<div dangerouslySetInnerHTML={{ __html: html }} />
+```
+
+Use this only when absolutely necessary.
+
+---
+
+## Sanitizing User Inputs
+
+User input should always be **validated and sanitized** before rendering or sending to APIs.
+
+### Client-Side Validation
+
+```jsx
+if (!email.includes("@")) {
+  setError("Invalid email");
+}
+```
+
+### Sanitizing HTML Content
+
+Use libraries like `DOMPurify` to clean unsafe HTML.
+
+```js
+import DOMPurify from "dompurify";
+const cleanHTML = DOMPurify.sanitize(dirtyHTML);
+```
+
+**Note:** Client-side sanitization is helpful, but **server-side validation is mandatory**.
+
+---
+
+## Secure HTTP Headers & CSP
+
+### Important Security Headers
+
+- `Content-Security-Policy (CSP)`
+- `X-Frame-Options`
+- `X-Content-Type-Options`
+- `Strict-Transport-Security`
+
+### Content Security Policy (CSP)
+
+CSP restricts where scripts and resources can load from.
+
+```http
+Content-Security-Policy: default-src 'self'
+```
+
+CSP significantly reduces XSS attack surface.
+
+---
+
+## Authentication Strategies
+
+### JWT (JSON Web Token)
+
+- Token-based authentication
+- Common for SPAs
+- Token sent with each request
+
+**Best Practices:**
+
+- Store tokens in **HTTP-only cookies**
+- Avoid localStorage for sensitive tokens
+
+---
+
+### OAuth
+
+- Delegated authentication (Google, GitHub, etc.)
+- User never shares credentials with your app
+- Often combined with JWT
+
+**Common Flow:**
+
+- OAuth provider authenticates user
+- App receives access token
+
+---
+
+## Security Best Practices
+
+- Never trust client-side data
+- Avoid exposing secrets in frontend code
+- Use HTTPS everywhere
+- Keep dependencies up-to-date
+- Handle errors without leaking sensitive info

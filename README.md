@@ -1905,3 +1905,131 @@ CSP significantly reduces XSS attack surface.
 - Use HTTPS everywhere
 - Keep dependencies up-to-date
 - Handle errors without leaking sensitive info
+
+# Accessibility (a11y) Best Practices
+
+## What is Accessibility?
+
+Accessibility (a11y) ensures that web applications can be **used by everyone**, including users with visual, auditory, motor, or cognitive disabilities.
+
+Why it matters:
+
+- Inclusive user experience
+- Better usability for all users
+- Legal and compliance requirements in many regions
+- Improves SEO and overall quality
+
+---
+
+## Screen Readers & Assistive Technologies
+
+Assistive technologies help users interact with web content:
+
+- **Screen readers** (NVDA, VoiceOver)
+- Screen magnifiers
+- Keyboard navigation tools
+
+Screen readers rely on **semantic HTML**, labels, and ARIA attributes to understand UI structure.
+
+---
+
+## WCAG Guidelines
+
+WCAG (Web Content Accessibility Guidelines) define accessibility standards.
+
+### Core Principles (POUR)
+
+- **Perceivable** – Content can be seen or heard
+- **Operable** – Interface works with keyboard
+- **Understandable** – Clear and predictable behavior
+- **Robust** – Compatible with assistive technologies
+
+Common target: **WCAG 2.1 Level AA**
+
+---
+
+## Semantic HTML & ARIA
+
+### Prefer Semantic HTML
+
+```jsx
+<button>Submit</button>
+<nav>...</nav>
+<header>...</header>
+```
+
+Semantic elements provide built-in accessibility.
+
+### ARIA (Accessible Rich Internet Applications)
+
+ARIA adds meaning when semantic HTML is not enough.
+
+```jsx
+<div role="alert" aria-live="assertive">
+  Error occurred
+</div>
+```
+
+**Rule:** Use ARIA only when native HTML cannot solve the problem.
+
+---
+
+## Keyboard-Friendly Interfaces
+
+All interactive elements should be usable via keyboard.
+
+Best practices:
+
+- Use `Tab`-navigable elements
+- Maintain visible focus states
+- Avoid keyboard traps
+
+```jsx
+<button onKeyDown={handleKey}>Save</button>
+```
+
+Avoid using clickable `div` elements without keyboard support.
+
+---
+
+## Accessible Forms
+
+### Labels and Inputs
+
+```jsx
+<label htmlFor="email">Email</label>
+<input id="email" type="email" />
+```
+
+### Error Messages
+
+```jsx
+<p role="alert">Email is required</p>
+```
+
+Best practices:
+
+- Always associate labels with inputs
+- Provide clear and descriptive error messages
+- Do not rely on color alone to show errors
+
+---
+
+## Accessibility Testing Tools
+
+### Lighthouse
+
+- Built into Chrome DevTools
+- Provides accessibility score and suggestions
+
+### axe DevTools
+
+- Browser extension
+- Identifies accessibility issues in real time
+
+### NVDA
+
+- Free screen reader for Windows
+- Used to test real user experience
+
+Regular testing helps catch issues early and ensures ongoing accessibility compliance.

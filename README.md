@@ -2033,3 +2033,123 @@ Best practices:
 - Used to test real user experience
 
 Regular testing helps catch issues early and ensures ongoing accessibility compliance.
+
+# Building and Deployment
+
+## Creating Production Builds
+
+Production builds optimize the app for performance by minifying code, removing dev warnings, and bundling assets.
+
+### Build Commands
+
+**Vite**
+
+```bash
+npm run build
+```
+
+**Create React App (CRA)**
+
+```bash
+npm run build
+```
+
+The output is generated in the `dist/` (Vite) or `build/` (CRA) folder, ready for deployment.
+
+---
+
+## Environment Variables (.env)
+
+Environment variables are used to manage configuration values like API URLs and keys.
+
+### Usage Rules
+
+- Variables must start with:
+
+  - `VITE_` (Vite)
+  - `REACT_APP_` (CRA)
+
+- Never commit sensitive values to Git
+
+**Example (.env):**
+
+```env
+VITE_API_URL=https://api.example.com
+```
+
+```js
+const apiUrl = import.meta.env.VITE_API_URL;
+```
+
+---
+
+## Deployment Platforms
+
+### Netlify
+
+- Simple drag-and-drop or Git-based deployment
+- Automatic builds on push
+
+**Build Settings:**
+
+- Build command: `npm run build`
+- Publish directory: `dist` or `build`
+
+---
+
+### Vercel
+
+- Optimized for frontend frameworks
+- Zero-config deployment for React apps
+- Automatic previews for pull requests
+
+---
+
+### GitHub Pages
+
+Used mainly for static React apps.
+
+**Common Setup:**
+
+- Add `homepage` field in `package.json`
+- Use `gh-pages` package
+
+```bash
+npm install gh-pages --save-dev
+```
+
+---
+
+## Handling Build Errors
+
+Common causes:
+
+- Missing environment variables
+- Incorrect import paths
+- Case-sensitive file name issues
+- Dependency version conflicts
+
+**Best Practices:**
+
+- Test production build locally
+- Keep dependencies updated
+- Fix warnings early
+
+---
+
+## Versioning & Releases
+
+Versioning helps track changes and releases.
+
+### Semantic Versioning
+
+- `MAJOR.MINOR.PATCH`
+- Example: `1.2.0`
+
+**Guidelines:**
+
+- Patch → bug fixes
+- Minor → backward-compatible features
+- Major → breaking changes
+
+Use Git tags and release notes to document deployments.

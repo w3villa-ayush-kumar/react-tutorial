@@ -9,7 +9,7 @@ const Registration = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     setFirstName("");
@@ -18,6 +18,10 @@ const Registration = () => {
     setContact("");
     setEmail("");
     setPassword("");
+
+    console.log("API:", import.meta.env.VITE_API_BASE_URL);
+    await new Promise((res) => setTimeout(res, 1000));
+    alert("Registration successful");
   };
 
   return (

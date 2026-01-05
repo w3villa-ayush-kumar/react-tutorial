@@ -2153,3 +2153,113 @@ Versioning helps track changes and releases.
 - Major → breaking changes
 
 Use Git tags and release notes to document deployments.
+
+# CI/CD for Frontend Projects
+
+## Introduction to CI/CD
+
+**CI/CD (Continuous Integration / Continuous Deployment)** automates code checks and deployments.
+
+- **CI** → Automatically runs checks (lint, test, build) on code changes
+- **CD** → Automatically deploys the app after successful checks
+
+Benefits:
+
+- Faster feedback
+- Fewer production bugs
+- Consistent deployments
+
+---
+
+## Setting Up GitHub Actions
+
+GitHub Actions allows running workflows on events like `push` or `pull_request`.
+
+### Basic Workflow Location
+
+```
+.github/workflows/ci.yml
+```
+
+---
+
+## CI Pipeline: Lint → Test → Build
+
+### Example CI Workflow
+
+```yml
+name: CI Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run lint
+        run: npm run lint
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build project
+        run: npm run build
+```
+
+### Pipeline Order
+
+- **Lint** → Code quality check
+- **Test** → Functional correctness
+- **Build** → Production readiness
+
+---
+
+## Deployment Automation
+
+### Deploy on Push (Example: Vercel)
+
+- Connect GitHub repo to Vercel
+- Every push to `main` triggers deployment automatically
+
+No separate deploy script is required for most frontend platforms.
+
+---
+
+## Preview Environments
+
+Preview environments create **temporary deployments** for pull requests.
+
+### How It Works
+
+- Create a pull request
+- CI runs checks
+- Platform (Vercel/Netlify) creates a preview URL
+
+Benefits:
+
+- Test features before merging
+- Share preview links with team
+- Catch UI issues early
+
+---
+
+## Best Practices
+
+- Fail fast on lint or test errors
+- Keep workflows small and readable
+- Use environment variables for secrets
+- Protect main branch with required checks

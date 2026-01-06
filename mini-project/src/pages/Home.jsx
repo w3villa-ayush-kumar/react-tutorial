@@ -13,7 +13,7 @@ const Home = () => {
   const [search, setSearch] = useState("");
 
   const [page, setPage] = useState(0);
-  const usersPerPage = 5;
+  const usersPerPage = 9;
 
   const isFormValid =
     name.trim() !== "" && email.trim() !== "" && /^[^@]+@[^@]+$/.test(email);
@@ -56,9 +56,9 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-linear-to-b from-purple-500 to-slate-800 flex justify-center p-16">
-      <div className="w-full bg-white/80 rounded-3xl h-150">
+      <div className="w-full bg-white/80 rounded-3xl">
         <div className="flex justify-between px-10 py-4 border-b rounded-t-3xl">
-          <h1 className="text-2xl inline font-semibold">User Management</h1>
+          <h1 className="text-2xl inline font-semibold">User Dashoard</h1>
           <input
             type="text"
             placeholder="Search users by name"
@@ -199,7 +199,7 @@ const Home = () => {
               <button
                 onClick={() => setPage(page - 1)}
                 disabled={page === 0}
-                className="px-4 py-2 text-sm rounded-lg bg-slate-200 hover:scale-105 cursor-pointer disabled:opacity-40 transition"
+                className="mt-4 px-4 py-2 text-sm rounded-lg bg-slate-200 hover:scale-105 cursor-pointer disabled:opacity-40 transition"
               >
                 Prev
               </button>
@@ -207,7 +207,7 @@ const Home = () => {
               <button
                 onClick={() => setPage(page + 1)}
                 disabled={start + usersPerPage >= filteredUsers.length}
-                className="px-4 py-2 text-sm rounded-lg bg-slate-800 hover:scale-105 cursor-pointer text-white disabled:opacity-40 transition"
+                className="mt-4 px-4 py-2 text-sm rounded-lg bg-slate-800 hover:scale-105 cursor-pointer text-white disabled:opacity-40 transition"
               >
                 Next
               </button>
